@@ -1,0 +1,43 @@
+{
+  "monorepo": true,
+  "root": ".",
+  "sourceRoot": ".",
+  "compilerOptions": {
+    "webpack": false,
+    "tsConfigPath": "tsconfig.json"
+  },
+  "projects": {
+    "book-service": {
+      "type": "application",
+      "root": "book-service",
+      "entryFile": "src/main",
+      "sourceRoot": "book-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "book-service/tsconfig.json",
+        "assets": ["**/*.proto"],
+        "webpack": false
+      }
+    },
+    "user-service": {
+      "type": "application",
+      "root": "user-service",
+      "entryFile": "src/main",
+      "sourceRoot": "user-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "user-service/tsconfig.json",
+        "assets": ["**/*.proto"],
+        "webpack": false
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "api-gateway",
+      "entryFile": "src/main",
+      "sourceRoot": "api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "api-gateway/tsconfig.json",
+        "webpack": false
+      }
+    }
+  }
+}
