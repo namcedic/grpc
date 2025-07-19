@@ -1,0 +1,7 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "user-service/src",
+  "compilerOptions": {
+    "outputPath": "../../dist/user-service"
+  }
+}

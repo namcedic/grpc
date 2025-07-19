@@ -1,0 +1,7 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "book-service/src",
+  "compilerOptions": {
+    "outputPath": "../../dist/user-service"
+  }
+}

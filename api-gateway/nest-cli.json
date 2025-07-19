@@ -1,0 +1,7 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "api-gateway/src",
+  "compilerOptions": {
+    "outputPath": "../../dist"
+  }
+}

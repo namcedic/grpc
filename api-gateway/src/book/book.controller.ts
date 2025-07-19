@@ -9,7 +9,6 @@ export class BookController {
 
     @Get(':id')
     getBook(@Param('id') id: string): Observable<BookResponse> {
-        console.log('first step')
         return this.bookService.getBook({ id: parseInt(id) });
     }
 }
