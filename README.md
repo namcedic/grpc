@@ -76,12 +76,76 @@ src/
 
 ## Development
 
-The project uses gRPC for inter-service communication. Services are registered using NestJS's `ClientsModule` with the following configuration:
+### gRPC Inter-Service Communication
 
-- Transport: gRPC
-- Protocol: protobuf
-- Services: User and Book services
-- Communication: Through generated proto files
+This project implements a microservices architecture using gRPC for service-to-service communication. Here's how the services interact:
+
+1. **Service Architecture**
+   - `api-gateway`: Main entry point that routes requests to appropriate services
+   - `user-service`: Handles user-related operations (user profiles, authentication)
+   - `book-service`: Handles book-related operations (book catalog, author information)
+
+2. **Communication Flow**
+   When a client requests book information:
+   1. The request goes to `api-gateway`
+   2. `api-gateway` routes the request to `book-service`
+   3. `book-service` makes a gRPC call to `user-service` to fetch author information
+   4. The combined response is sent back through the chain to the client
+
+3. **gRPC Configuration**
+   Each service is configured with:
+   ```typescript
+   ClientsModule.register([
+     {
+       name: USER_SERVICE,  // Service identifier
+       transport: Transport.GRPC,
+       options: {
+         package: 'user',    // Proto package name
+         protoPath: join(process.cwd(), '/proto/user.proto'),
+         url: 'localhost:50051',  // Service endpoint
+       },
+     }
+   ])
+   ```
+
+4. **Service Integration Example**
+   In `book-service`, when fetching a book:
+   ```typescript
+   async getBook(id: number): Promise<BookResponse> {
+     const book = this.books.find((b) => b.id === id);
+     if (!book) {
+       throw new BadRequestException('Book not found');
+     }
+     
+     // Fetch author information from user-service
+     const author = await firstValueFrom(
+       this.userService.getUser({ id: parseInt(book.author) })
+     );
+     
+     return {
+       ...book,
+       author: author.name  // Combine book and author information
+     };
+   }
+   ```
+
+5. **Error Handling**
+   - Each service has proper error handling using NestJS's `BadRequestException`
+   - Errors are propagated through the gRPC chain
+   - Invalid IDs or missing resources return appropriate error messages
+
+6. **Service Ports**
+   - API Gateway: `3000`
+   - User Service: `50051`
+   - Book Service: `50052`
+
+### Proto Files
+The project uses Protocol Buffers (protobuf) for defining service contracts:
+
+- `user.proto`: Defines user-related operations and data structures
+- `book.proto`: Defines book-related operations and data structures
+
+These proto files are used to generate TypeScript client and server code for gRPC communication.
 
 ## Contributing
 

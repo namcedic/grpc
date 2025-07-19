@@ -3,12 +3,13 @@ import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {join} from "path";
+import {BOOK_SERVICE, USER_SERVICE} from "../../../common/constant";
 
 @Module({
     imports: [
         ClientsModule.register([
             {
-                name: 'USER_SERVICE',
+                name: USER_SERVICE,
                 transport: Transport.GRPC,
                 options: {
                     package: 'user',
@@ -17,7 +18,7 @@ import {join} from "path";
                 },
             },
             {
-                name: 'BOOK_SERVICE',
+                name: BOOK_SERVICE,
                 transport: Transport.GRPC,
                 options: {
                     package: 'book',

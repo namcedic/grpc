@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import { UserResponse } from '../../generated/user';
 
 @Injectable()
@@ -10,6 +10,9 @@ export class UserService {
 
     getUser(id: number): UserResponse {
         const user = this.users.find((u) => u.id === id);
-        return user || { id: 0, name: '', email: '' };
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+        return user;
     }
 }

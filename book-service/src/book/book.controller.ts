@@ -8,7 +8,7 @@ export class BookController {
     constructor(private readonly bookService: BookService) {}
 
     @GrpcMethod('BookService', 'GetBook')
-    getBook(data: BookRequest): BookResponse {
+    async getBook(data: BookRequest): Promise<BookResponse> {
         return this.bookService.getBook(data.id);
     }
 }

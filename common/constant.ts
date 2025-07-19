@@ -1,0 +1,2 @@
+export const USER_SERVICE = 'USER_SERVICE';
+export const BOOK_SERVICE = 'BOOK_SERVICE';
