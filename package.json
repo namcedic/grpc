@@ -1,43 +1,21 @@
 {
-  "monorepo": true,
-  "root": ".",
-  "sourceRoot": ".",
-  "compilerOptions": {
-    "webpack": false,
-    "tsConfigPath": "tsconfig.json"
+  "name": "grpc-nestjs-example",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "api-gateway",
+    "user-service",
+    "book-service"
+  ],
+  "scripts": {
+    "start:api": "cd api-gateway && npm run start",
+    "start:user": "cd user-service && npm run start",
+    "start:book": "cd book-service && npm run start",
+    "proto:generate": "npm run proto:generate --prefix api-gateway && npm run proto:generate --prefix user-service && npm run proto:generate --prefix book-service"
   },
-  "projects": {
-    "book-service": {
-      "type": "application",
-      "root": "book-service",
-      "entryFile": "src/main",
-      "sourceRoot": "book-service/src",
-      "compilerOptions": {
-        "tsConfigPath": "book-service/tsconfig.json",
-        "assets": ["**/*.proto"],
-        "webpack": false
-      }
-    },
-    "user-service": {
-      "type": "application",
-      "root": "user-service",
-      "entryFile": "src/main",
-      "sourceRoot": "user-service/src",
-      "compilerOptions": {
-        "tsConfigPath": "user-service/tsconfig.json",
-        "assets": ["**/*.proto"],
-        "webpack": false
-      }
-    },
-    "api-gateway": {
-      "type": "application",
-      "root": "api-gateway",
-      "entryFile": "src/main",
-      "sourceRoot": "api-gateway/src",
-      "compilerOptions": {
-        "tsConfigPath": "api-gateway/tsconfig.json",
-        "webpack": false
-      }
-    }
+  "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@nestjs/platform-express": "^11.1.5",
+    "ts-proto": "^2.7.5"
   }
 }

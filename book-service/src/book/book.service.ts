@@ -1,33 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { BookEntity } from './entities/book.entity';
-import {
-  BookResponse,
-  CreateBookRequest,
-  GetBookRequest,
-} from '../../../proto/book';
+import { BookResponse } from '../../generated/book';
 
 @Injectable()
 export class BookService {
-  constructor(
-    @InjectRepository(BookEntity)
-    private bookRepo: Repository<BookEntity>,
-  ) {}
+    private readonly books: BookResponse[] = [
+        { id: 1, title: 'Book One', author: 'Author One' },
+        { id: 2, title: 'Book Two', author: 'Author Two' },
+    ];
 
-  async getBook(data: GetBookRequest): Promise<BookResponse | undefined> {
-    const book = await this.bookRepo.findOne({ where: { id: data.id } });
-
-    return {
-      data: book ? book : undefined,
-    };
-  }
-
-  async createBook(data: CreateBookRequest): Promise<BookResponse | undefined> {
-    const book = this.bookRepo.create({ title: data.title });
-    await this.bookRepo.save(book);
-    return {
-      data: book ? book : undefined,
-    };
-  }
+    getBook(id: number): BookResponse {
+        const book = this.books.find((b) => b.id === id);
+        return book || { id: 0, title: '', author: '' };
+    }
 }
