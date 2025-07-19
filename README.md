@@ -12,7 +12,7 @@ This is a monorepo project with the following main components:
 
 ## Prerequisites
 
-- Node.js (v18 or higher recommended)
+- Node.js (v20 or higher recommended)
 - npm (comes with Node.js)
 - gRPC tools (for generating proto files)
 
