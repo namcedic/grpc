@@ -11,10 +11,13 @@
     "start:api": "cd api-gateway && npm run start",
     "start:user": "cd user-service && npm run start",
     "start:book": "cd book-service && npm run start",
-    "proto:generate": "npm run proto:generate --prefix api-gateway && npm run proto:generate --prefix user-service && npm run proto:generate --prefix book-service"
+    "start:auth": "cd auth-service && npm run start",
+    "proto:generate": "npm run proto:generate --prefix api-gateway && npm run proto:generate --prefix user-service && npm run proto:generate --prefix book-service && npm run proto:generate --prefix auth-service"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.4",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/microservices": "^11.1.5",
     "@nestjs/platform-express": "^11.1.5",
     "rxjs": "^7.8.2",
     "ts-proto": "^2.7.5"

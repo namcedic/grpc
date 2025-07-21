@@ -40,7 +40,7 @@ npm run start:api
 npm run start:user
 
 # Run Book Service
-npm run start:book
+npm run start:auth
 ```
 
 ## Service Ports
@@ -68,9 +68,9 @@ src/
 │   ├── user.service.ts
 │   └── user.module.ts
 ├── book/           # Book service implementation
-│   ├── book.controller.ts
-│   ├── book.service.ts
-│   └── book.module.ts
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   └── auth.module.ts
 └── app.module.ts   # Root module
 ```
 
@@ -124,7 +124,7 @@ This project implements a microservices architecture using gRPC for service-to-s
      
      return {
        ...book,
-       author: author.name  // Combine book and author information
+       author: author.name  // Combine auth and author information
      };
    }
    ```

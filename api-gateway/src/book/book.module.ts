@@ -3,7 +3,7 @@ import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {join} from "path";
-import {BOOK_SERVICE, USER_SERVICE} from "../../../common/constant";
+import {AUTH_SERVICE, BOOK_SERVICE, USER_SERVICE} from "../../../common/constant";
 
 @Module({
     imports: [
@@ -24,6 +24,15 @@ import {BOOK_SERVICE, USER_SERVICE} from "../../../common/constant";
                     package: 'book',
                     protoPath: join(process.cwd(), '/proto/book.proto'),
                     url: 'localhost:50052',
+                },
+            },
+            {
+                name: AUTH_SERVICE,
+                transport: Transport.GRPC,
+                options: {
+                    package: 'auth',
+                    protoPath: join(process.cwd(), '/proto/auth.proto'),
+                    url: 'localhost:50055',
                 },
             },
         ]),

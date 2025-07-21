@@ -1,0 +1,7 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "auth-service/src",
+  "compilerOptions": {
+    "outputPath": "../../dist/auth-service"
+  }
+}

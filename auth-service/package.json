@@ -1,0 +1,27 @@
+{
+  "name": "book-service",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "proto:generate": "protoc --plugin=protoc-gen-ts_proto=../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated --ts_proto_opt=nestJs=true -I ./proto ./proto/*.proto"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/microservices": "^10.0.0",
+    "@grpc/proto-loader": "^0.7.10",
+    "ts-proto": "^2.7.5"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.0.0",
+    "@nestjs/schematics": "^10.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
