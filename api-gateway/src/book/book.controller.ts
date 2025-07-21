@@ -10,7 +10,6 @@ export class BookController {
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     getBook(@Param('id') id: string): Promise<BookResponse> {
-        console.log('1')
         return this.bookService.getBook({ id: parseInt(id) });
     }
 }

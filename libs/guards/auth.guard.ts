@@ -14,7 +14,6 @@ export class JwtAuthGuard implements CanActivate {
         const request = ctx.switchToHttp().getRequest();
 
         const authHeader = request.headers['authorization'];
-        console.log(authHeader, 'authorization');
 
         if (!authHeader || typeof authHeader !== 'string') {
             throw new UnauthorizedException('Missing Authorization header');
@@ -27,14 +26,12 @@ export class JwtAuthGuard implements CanActivate {
         }
 
         const res = await firstValueFrom(this.authService.validateUserToken({ token }));
-        console.log(res, token)
 
         if (!res.user) {
             throw new UnauthorizedException('Unauthorized');
         }
 
         request.user = res.user;
-        console.log(request.user)
         return true;
     }
 }

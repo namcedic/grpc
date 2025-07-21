@@ -1,20 +1,25 @@
-# gRPC-based Microservices Example
+# gRPC-based Microservices Architecture
 
-A microservices architecture example using gRPC with NestJS, demonstrating user and book services with an API gateway.
+A microservices architecture built with NestJS and gRPC, implementing a secure book management system with authentication.
 
 ## Project Structure
 
-This is a monorepo project with the following main components:
+This is a monorepo project with the following microservices:
 
-- `api-gateway`: The main API gateway service that routes requests to appropriate microservices
-- `user-service`: Microservice handling user-related operations
-- `book-service`: Microservice handling book-related operations
+- `api-gateway`: Main entry point that routes requests to appropriate services
+- `auth-service`: Handles user authentication and JWT token management
+- `user-service`: Manages user profiles and authentication data
+- `book-service`: Handles book catalog and author information
+
+Each service is built with NestJS and communicates via gRPC.
 
 ## Prerequisites
 
-- Node.js (v20 or higher recommended)
+- Node.js (v20 or higher)
 - npm (comes with Node.js)
 - gRPC tools (for generating proto files)
+- TypeScript (for development)
+- Protocol Buffers compiler (for proto files)
 
 ## Installation
 
@@ -28,6 +33,21 @@ npm install
 npm run proto:generate
 ```
 
+3. Start all services:
+```bash
+# Start API Gateway
+npm run start:api
+
+# Start Auth Service
+npm run start:auth
+
+# Start User Service
+npm run start:user
+
+# Start Book Service
+npm run start:book
+```
+
 ## Running the Services
 
 The project uses workspaces to manage different services. You can run each service individually:
@@ -36,124 +56,154 @@ The project uses workspaces to manage different services. You can run each servi
 # Run API Gateway
 npm run start:api
 
+# Run Auth Service
+npm run start:auth
+
 # Run User Service
 npm run start:user
 
 # Run Book Service
-npm run start:auth
+npm run start:book
 ```
 
 ## Service Ports
 
 - API Gateway: `3000`
-- User Service: `50051`
-- Book Service: `50052`
+- Auth Service: `50055` (gRPC)
+- User Service: `50051` (gRPC)
+- Book Service: `50052` (gRPC)
 
 ## API Endpoints
 
-### User Service
-- GET `/users/:id` - Get user by ID
+### API Endpoints
 
-### Book Service
-- GET `/books/:id` - Get book by ID
+### Authentication (Auth Service)
+- POST `/auth/validate` - Validate JWT token
+
+### Books (Book Service)
+- GET `/books/:id` - Get book by ID (requires authentication)
+
+### Users (User Service)
+- GET `/users/:id` - Get user by ID (requires authentication)
 
 ## Project Organization
 
-Each service follows a standard NestJS structure:
-
 ```
 src/
-├── user/           # User service implementation
-│   ├── user.controller.ts
-│   ├── user.service.ts
-│   └── user.module.ts
-├── book/           # Book service implementation
+├── auth/           # Authentication service
 │   ├── auth.controller.ts
 │   ├── auth.service.ts
 │   └── auth.module.ts
+├── user/           # User service
+│   ├── user.controller.ts
+│   ├── user.service.ts
+│   └── user.module.ts
+├── book/           # Book service
+│   ├── book.controller.ts
+│   ├── book.service.ts
+│   └── book.module.ts
 └── app.module.ts   # Root module
 ```
 
 ## Development
 
-### gRPC Inter-Service Communication
+### gRPC Communication
 
-This project implements a microservices architecture using gRPC for service-to-service communication. Here's how the services interact:
+The services communicate using gRPC with the following configuration:
 
-1. **Service Architecture**
-   - `api-gateway`: Main entry point that routes requests to appropriate services
-   - `user-service`: Handles user-related operations (user profiles, authentication)
-   - `book-service`: Handles book-related operations (book catalog, author information)
+1. **Service Discovery**
+   - Each service registers with its own port
+   - Services use generated client stubs for communication
 
-2. **Communication Flow**
-   When a client requests book information:
-   1. The request goes to `api-gateway`
-   2. `api-gateway` routes the request to `book-service`
-   3. `book-service` makes a gRPC call to `user-service` to fetch author information
-   4. The combined response is sent back through the chain to the client
+2. **Authentication Flow**
+   - All requests to protected endpoints require JWT token
+   - Token validation is handled by Auth Service
+   - User information is passed through gRPC metadata
 
-3. **gRPC Configuration**
-   Each service is configured with:
-   ```typescript
-   ClientsModule.register([
-     {
-       name: USER_SERVICE,  // Service identifier
-       transport: Transport.GRPC,
-       options: {
-         package: 'user',    // Proto package name
-         protoPath: join(process.cwd(), '/proto/user.proto'),
-         url: 'localhost:50051',  // Service endpoint
-       },
-     }
-   ])
-   ```
-
-4. **Service Integration Example**
-   In `book-service`, when fetching a book:
-   ```typescript
-   async getBook(id: number): Promise<BookResponse> {
-     const book = this.books.find((b) => b.id === id);
-     if (!book) {
-       throw new BadRequestException('Book not found');
-     }
-     
-     // Fetch author information from user-service
-     const author = await firstValueFrom(
-       this.userService.getUser({ id: parseInt(book.author) })
-     );
-     
-     return {
-       ...book,
-       author: author.name  // Combine auth and author information
-     };
-   }
-   ```
-
-5. **Error Handling**
-   - Each service has proper error handling using NestJS's `BadRequestException`
-   - Errors are propagated through the gRPC chain
-   - Invalid IDs or missing resources return appropriate error messages
-
-6. **Service Ports**
-   - API Gateway: `3000`
-   - User Service: `50051`
-   - Book Service: `50052`
+3. **Error Handling**
+   - Each service has proper error handling using NestJS exceptions
+   - gRPC errors are properly mapped to HTTP status codes
+   - Authentication failures return appropriate error messages
 
 ### Proto Files
-The project uses Protocol Buffers (protobuf) for defining service contracts:
+The project uses Protocol Buffers for defining service contracts:
 
-- `user.proto`: Defines user-related operations and data structures
-- `book.proto`: Defines book-related operations and data structures
+- `auth.proto`: Authentication service definitions
+- `user.proto`: User service definitions
+- `book.proto`: Book service definitions
+
+These proto files are used to generate TypeScript client and server code for gRPC communication.
+
+
+### Error Handling
+- Each service has proper error handling using NestJS's `BadRequestException`
+- Errors are propagated through the gRPC chain
+- Invalid IDs or missing resources return appropriate error messages
+- Authentication failures return 401 Unauthorized
+- Authorization failures return 403 Forbidden
 
 These proto files are used to generate TypeScript client and server code for gRPC communication.
 
 ## Contributing
 
+### Security Guidelines
+
+1. **Authentication**
+   - Always use JWT tokens for authentication
+   - Validate tokens using `JwtAuthGuard`
+
+2. **Error Handling**
+   - Use appropriate HTTP status codes
+   - Handle gRPC errors gracefully
+   - Log errors appropriately
+
+3. **Code Organization**
+   - Keep authentication logic in `auth-service`
+   - Use guards for protected routes
+   - Implement proper error handling
+
+4. **Testing**
+   - Test authentication flows
+   - Test error scenarios
+   - Test service-to-service communication
+
+## Security Implementation
+
+1. **Authentication**
+   - JWT-based authentication
+   - Token validation through Auth Service
+   - Protected routes using `JwtAuthGuard`
+   - User information in gRPC metadata
+
+2. **Authorization**
+   - Role-based access control
+   - Protected endpoints require valid JWT
+   - Token expiration handling
+   - Request validation
+
+## Contributing
+
 1. Fork the repository
 2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+3. Add tests for new features
+4. Update documentation
+5. Commit your changes
+6. Push to the branch
+7. Create a Pull Request
+
+## License
+
+MIT
+
+## Authors
+
+- Cedric - Initial work
+
+## Acknowledgments
+
+- NestJS team for the excellent framework
+- gRPC team for the protocol implementation
+- All contributors to the project
 
 ## License
 

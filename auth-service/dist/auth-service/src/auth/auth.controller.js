@@ -19,7 +19,6 @@ let AuthController = class AuthController {
     }
     async validateUserToken(data) {
         const decoded = await this.authService.verifyJwt(data.token);
-        console.log(data, decoded);
         if (!decoded) {
             return {};
         }

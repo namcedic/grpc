@@ -1,5 +1,5 @@
 import {BadRequestException, Inject, Injectable} from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import {ClientGrpc} from '@nestjs/microservices';
 import {firstValueFrom} from 'rxjs';
 import {BOOK_SERVICE_NAME, BookRequest, BookResponse, BookServiceClient} from "../../generated/book";
 import {BOOK_SERVICE} from "../../../common/constant";
@@ -15,9 +15,7 @@ export class BookService {
 
     async getBook(data: BookRequest): Promise<BookResponse> {
         try {
-           const book = await firstValueFrom(this.bookService.getBook(data));
-            console.log(book)
-            return book
+            return await firstValueFrom(this.bookService.getBook(data))
         } catch (err: any) {
             throw new BadRequestException(err.message);
         }

@@ -10,7 +10,6 @@ export class AuthController {
     @GrpcMethod('AuthService', 'ValidateUserToken')
     async validateUserToken(data: ValidateTokenRequestDto): Promise<ValidateTokenResponseDto> {
         const decoded = await this.authService.verifyJwt(data.token);
-        console.log(data,decoded)
 
         if (!decoded) {
             return {};
