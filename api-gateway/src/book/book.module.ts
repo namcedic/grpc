@@ -9,15 +9,6 @@ import {AUTH_SERVICE, BOOK_SERVICE, USER_SERVICE} from "../../../common/constant
     imports: [
         ClientsModule.register([
             {
-                name: USER_SERVICE,
-                transport: Transport.GRPC,
-                options: {
-                    package: 'user',
-                    protoPath: join(process.cwd(), '/proto/user.proto'),
-                    url: 'localhost:50051',
-                },
-            },
-            {
                 name: BOOK_SERVICE,
                 transport: Transport.GRPC,
                 options: {

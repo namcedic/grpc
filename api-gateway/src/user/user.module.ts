@@ -3,7 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {join} from "path";
-import {USER_SERVICE} from "../../../common/constant";
+import {AUTH_SERVICE, USER_SERVICE} from "../../../common/constant";
 
 @Module({
     imports: [
@@ -16,7 +16,16 @@ import {USER_SERVICE} from "../../../common/constant";
                     protoPath: join(process.cwd(), '/proto/user.proto'),
                     url: 'localhost:50051',
                 },
-            }
+            },
+            {
+                name: AUTH_SERVICE,
+                transport: Transport.GRPC,
+                options: {
+                    package: 'auth',
+                    protoPath: join(process.cwd(), '/proto/auth.proto'),
+                    url: 'localhost:50055',
+                },
+            },
         ]),
     ],
     controllers: [UserController],
